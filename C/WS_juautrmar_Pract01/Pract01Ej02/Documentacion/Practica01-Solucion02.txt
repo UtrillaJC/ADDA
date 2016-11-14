@@ -1,0 +1,234 @@
+Apartado 1: Cree un nuevo proyecto llamado Pract01Ej02 de la misma manera que lo hizo
+            en el ejercicio anterior.
+            
+                 HECHO
+                 
+Apartado 2: Incorpore al proyecto el archivo potencia.c suministrado con la práctica en
+            la carpeta de proyecto e implemente la definición recursiva de potencia:
+
+        Solución:
+        ---------
+        Este es la definición recursiva que nos dan. Vamos a adaptarlo en una definición recur-
+        siva formal:
+        
+                        /  1            , si n = 0
+                  a^n = |
+                        \  a * a^(n-1)  , si n > 0
+
+        Analicemos el algoritmo parte por parte:
+
+                    / b(x): condición del caso base -+ Caso base: su solución es tan sencilla
+                    | !b(x): contrario a b(x)        | de resolver que no hay que hacer una
+                    | sb(x): solución del caso base -+ llamada recursiva para calcularlo.
+           ¿Qué     |
+         significa  | sp(x): siguiente problema.  ¿Cómo cambia el problema al hacer la llamada
+           cada     |                             recursiva? No le paso x, paso una transforma-
+           cosa?    |                             ción de x.
+                    |
+                    | f(sp(x)): llamada recursiva del siguiente problema
+                    |
+                    \ c(x, f(sp(x))): función de   ¿Qué se hace con el problema y con el
+                                      combinación.  resultado de la llamada recursiva?
+  
+         · x: (a,n) --------------> Donde aparezca x, sustituimos por (a,n)
+         · b(x)  == b(a,n):  n = 0
+         · sb(x) == sb(a,n): 1
+         · sp(x) == sp(a,n): (a,n-1)
+         · f(sp(x)) == f(sp(a,n)): f(a,n-1)
+         · c(x, f(sp(x))): c((a,n), f(a,n-1)) = a * f(a,n-1)
+  
+         Una vez analizado, construyamos la definición recursiva:
+  
+                    / sb(x)           , b(x)                  / 1       ,   n = 0
+             f(x) = |                         ---->  f(a,n) = |
+                    \ c(x, f(sp(x))) , !b(x)                  \ a * f(a,n-1),   n > 0
+         
+         Realicemos una traza para ver si la definición es correcta:
+         
+          f(3, 3) = 3 * f(3, 2) = 3 * 3 * f(3, 1) = 3 * 3 * 3 * f(3, 0) = 3 * 3 * 3 * 1  = 27 (OK)
+                   
+         El código resultante seria:
+                  
+          +-- Esquema de diseño recursivo ----------------------------------------------------+
+          |                                                                                   |
+          |  R g (T p){                  T: tipo del problema                                 |
+          |       return f ( i(p) );     E: tipo del problema 'generalizado'                  |
+          |  }                           R: tipo de la solución                               |             
+          |                                                                                   |
+          |  R f (E x){                  Paso 1: A partir del problema inicial (T p) genera-  |
+          |       R r, R s, E, y;                lizamos a otro (E x) y definimos su dominio  |
+          |                                      (problemas de interés).                      |
+          |       if( b(x) ){            Paso 2: Definimos una función de tamaño t (E x).     | 
+          |            r = sb(x);        Paso 3: Escogemos un conjunto de problemas de tamaño |
+          |       }                              pequeño b(E x) cuya solución es conocida     |
+          |       else {                         sb(E x).                                     |
+          |            y = sp(x);        Paso 4: Para problemas más grandes:                  |
+          |            s = f(y);                  · Escogemos un subconjunto de problemas     |
+          |            r = c(x,s)                   sp(E x) de tamaño menor al original.      |
+          |       }                               · Diseñamos una función de combinación      |
+          |                                         c(E x, LR s) que calcula la solución      |
+          |       return r;                         del problema.                             |
+          |  }                           Paso 5: Diseñamos la función de instanciación i(T p) |
+          +-----------------------------------------------------------------------------------+
+          
+          int potenciaNoFinal (int base, int exponente){
+	           int ret;
+
+               if (exponente == 0)    // Caso base (En este ejercicio, solo hay uno)
+                    ret = 1;          
+               else                   // Caso recursivo (En este ejercicio, solo hay uno)
+                    ret = base * potenciaNoFinal(base, exponente - 1);
+
+	           return ret;
+          }
+                
+             
+Apartado 3: Compile y ejecute el programa y verifique que funciona correctamente:
+
+                 HECHO
+                 
+Apartado 4: ¿Es recursividad simple o múltiple? ¿Es final o no final?
+
+          +- Recuerda que: -------------------------------------------------------------------+
+          |                                                                                   | 
+          | - Recursividad simple o lineal: en cada llamada recursiva se ejecuta, como mucho, |
+          |   ----------------------------  una llamada a la propia función. Esto puede ser:  |
+          |                                                                                   |
+          |     · Recursividad no final: antes de la llamada recursiva hago una operación.    |
+          |       ---------------------                                                       |
+          |                                                                                   |
+          |     · Recursividad final: antes de la llamada recursiva no hay nada.              |
+          |       ------------------                                                          |
+          |                                                                                   |
+          | - Recursividad multiple: en cada llamada recursiva pueden ejecutarse más de una   |
+          |   ---------------------  llamada a la propia función.                             |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+  
+              
+          Este algoritmo es recursivo simple no final.
+          
+Apartado 5: Implemente una nueva función potencialFinal en potencia.c a partir de la solución an- 
+            terior y los esquemas recursivos vistos en teoria.
+
+        Solución:
+        ---------
+          +- Transformación recursivo no final a final:  -------------------------------------+
+          |                                                                                   |
+          | · Dada una definición recursiva no final, la definición recursiva final quedaria: |
+          |                                                                                   |
+          |                                                   f(x) = fg(x,e)                  |
+          |                                                                                   |
+          |        / sb(x)         ,  b(x)               / c'(sb(x), ac)      ,  b(x)         |
+          |  f(x)= |                            fg(x,e)= |                                    |
+          |        \ c(x, f(sp(x))),  !b(x)              \ fg(sp(x), c'(x,ac)), !b(x)         |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+
+          
+        Analicemos el algoritmo parte por parte:
+
+                    / b(x): condición del caso base -+ Caso base: su solución es tan sencilla
+                    | !b(x): contrario a b(x)        | de resolver que no hay que hacer una
+                    | sb(x): solución del caso base -+ llamada recursiva para calcularlo.
+                    |
+                    | sp(x): siguiente problema.  ¿Cómo cambia el problema al hacer la llamada
+                    |                             recursiva? No le paso x, paso una transforma-
+                    |                             ción de x.
+                    |
+                    | f(sp(x)): llamada recursiva del siguiente problema
+                    |
+                    | c(x, f(sp(x))): función de   ¿Qué se hace con el problema y con el
+           ¿Qué     |                 combinación.  resultado de la llamada recursiva?
+         significa  |
+           cada     | e: valor con el que se va a inicializar el acumulador (ac). Éste depende- 
+           cosa?    |    rá de la operación adicional que se realice. Si la operación adicional:
+                    |       · Es una suma: el operador neutro (valor al que se inicializa) es 0
+                    |       · Es una multiplicación: el operador neutro (valor al que se inicia-
+                    |                                liza) es 1
+                    | ac: variable acumuladora
+                    |
+                    | fg(x,e): función generalizada.
+                    | 
+                    | c'(sb(x), ac): función de combinacion.
+                    | 
+                    | c'(x, ac): función de combinación.
+                    | 
+                    \ fg(sp(x), c'(x,ac)): llamada recursiva del siguiente problema
+                                      
+                                      
+          
+         · x: (a,n) --------------> Donde aparezca x, sustituimos por (a,n)
+         · b(x)  == b(a,n):  n = 0
+         · sb(x) == sb(a,n): 1
+         · sp(x) == sp(a,n): (a,n-1)
+         · f(sp(x)) == f(sp(a,n)): f(a,n-1)
+         · c(x, f(sp(x))): c((a,n), f(a,n-1)) = a * f(a,n-1)
+         · e = 1 ----------> La operación adicional es una multiplicación (a * f(a,n-1))
+         · fg(x,e) == fg(a,n,e): fg(a,n,1)
+         · c'(sb(x), ac) == c'(sb(a,n), ac): 1 * ac = ac
+         · c'(x, ac) == c'(a,n,ac)
+         · fg(sp(x), c'(x,ac)) == fg(sp(a,n), c'(a,n,ac)): fg(a, n-1, ac * a)
+         
+         Una vez analizado, construyamos la definición recursiva:
+  
+                    / sb(x)           , b(x)                     / ac              ,   n = 0
+             f(x) = |                         ---->  f(a,n, 1) = |
+                    \ c(x, f(sp(x))) , !b(x)                     \ f(a,n-1, a * ac),   n > 0
+         
+         Realicemos una traza para ver si la definición es correcta:
+         
+          f(3, 3, 1) = f(3, 2, 1 * 3) = f(3, 1, 1 * 3 * 3) = f(3, 0, 1 * 3 * 3 * 3) = 27 (OK)   
+                    
+          El código resultante seria:
+          
+          int potenciaFinal (int base, int exponente, int acumulador){  // e debe ser 1
+	           int ret;
+
+               if (exponente == 0)    // Caso base (En este ejercicio, solo hay uno)
+                    ret = acumulador;          
+               else                   // Caso recursivo (En este ejercicio, solo hay uno)
+                    ret = potenciaFinal(base, exponente - 1,  acumulador * base);
+
+	           return ret;
+          }
+                
+Apartado 6: Implemente una nueva función potencialIterativa en potencia.c a partir de la solución an- 
+            terior y los esquemas recursivos vistos en teoria.
+          
+          +- Transformación recursivo final a iterativo: -------------------------------------+
+          |                                                                                   |
+          |  · Dada una función recursiva final, el algoritmo resultante es de la forma:      |
+	      |                                                                                   |
+	      |           g(p) = f(i(p))                        R g (T p){                        |
+	      |                                                      E x = i(p);                  |
+	      |          / sb(x)        , b(x)                       while (!b(x)){               |
+	      |   f(x) = |                                                x = sp(x);              |
+	      |          \ f(sp(x))     , !b(x)                      }                            |
+	      |                                                      return sb(x);                |
+	      |                                                 }                                 |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+
+          
+          Analicemos nuestra definición recursiva:
+          
+                     f(a,n) = f(a,n,1))                   · x: (a, n, ac)
+                                                          · sb(x) = sb(a, n, ac): ac
+                      / ac              ,   n = 0         · b(x) = b(a, n, ac):   n = 0
+          f(a,n, 1) = |                                   · !b(x) = !b(a,n, ac):  n > 0
+                      \ f(a,n-1, a * ac),   n > 0         · sp(x) = sp(a,n, ac):  (a, n-1, a*ac)
+                                                          · f(sp(x)) = f(sp(a,n,ac)): f(a, n-1, a*ac)
+                                                          
+          Nuestro algoritmo quedaría de la siguiente forma:
+          
+          R g (T p){                       int potenciaIterativa (int base, int exponente){
+               E x = i(p);                      int acumulador = 1;
+          	   while(!b(x)){                    while (exponente > 0){
+          	        x = sp(x);                       exponente = exponente - 1;
+          	   }                                     acumulador	= acumulador * base;
+          	   return sb(x);                    }
+          }                                     return acumulador;
+                                           }
+
+Apartado 7: Compruebe el correcto funcionamiento de las tres implementaciones para varios casos de 
+            prueba y compare los resultados obtenidos:
+            
+            HECHO. En los 3 casos coinciden los resultados.

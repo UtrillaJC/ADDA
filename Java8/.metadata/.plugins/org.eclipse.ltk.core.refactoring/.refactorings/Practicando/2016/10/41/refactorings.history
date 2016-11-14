@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;TrianguloEquilateroIml.java&apos; to &apos;TrianguloEquilateroImpl.java&apos;&#x0D;&#x0A;- Original project: &apos;Practicando&apos;&#x0D;&#x0A;- Original element: &apos;TrianguloEquilateroIml.java&apos;&#x0D;&#x0A;- Renamed element: &apos;TrianguloEquilateroImpl.java&apos;" description="Rename compilation unit &apos;TrianguloEquilateroIml.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;{TrianguloEquilateroIml.java" name="TrianguloEquilateroImpl.java" references="false" stamp="1476621526969" version="1.0"/>
+</session>

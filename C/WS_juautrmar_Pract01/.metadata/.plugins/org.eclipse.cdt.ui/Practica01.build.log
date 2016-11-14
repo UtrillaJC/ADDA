@@ -1,0 +1,19 @@
+01:41:17 **** Incremental Build of configuration Debug for project Practica01 ****
+Info: Internal Builder is used for build
+gcc -o Practica01.exe "Practica 01 Alumno\\Pract01Ej01\\factorial.o" "Practica 01 Alumno\\Pract01Ej06\\repeticiones.o" "Practica 01 Alumno\\Pract01Ej07\\division.o" 
+Practica 01 Alumno\Pract01Ej06\repeticiones.o: In function `main':
+C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej06/repeticiones.c:6: multiple definition of `main'
+Practica 01 Alumno\Pract01Ej01\factorial.o:C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej01/factorial.c:7: first defined here
+Practica 01 Alumno\Pract01Ej07\division.o: In function `main':
+C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej07/division.c:6: multiple definition of `main'
+Practica 01 Alumno\Pract01Ej01\factorial.o:C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej01/factorial.c:7: first defined here
+Practica 01 Alumno\Pract01Ej01\factorial.o: In function `main':
+C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej01/factorial.c:13: undefined reference to `factorial'
+Practica 01 Alumno\Pract01Ej06\repeticiones.o: In function `main':
+C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej06/repeticiones.c:17: undefined reference to `repeticiones'
+Practica 01 Alumno\Pract01Ej07\division.o: In function `main':
+C:\Users\Juanca\C\WS_juautrmar_Pract01\Practica01\Debug/../Practica 01 Alumno/Pract01Ej07/division.c:19: undefined reference to `division'
+collect2.exe: error: ld returned 1 exit status
+
+01:41:17 Build Finished (took 443ms)
+

@@ -1,0 +1,138 @@
+Apartado 1: Cree un nuevo proyecto llamado Pract01Ej05.
+            
+                 HECHO
+                 
+Apartado 2: Incorpore al proyecto el archivo euclides.c proporcionado e implemente la defi-
+            nición recursiva del problema:
+
+                            /  n                     , si 0 <= n <= 1  
+                  fib(n) =  |  
+                            \ fib(n1) + fib(n-2)    , si n > 1
+
+        Solución:
+        ---------
+          
+				int fibMultiple (int n){
+					int ret;
+					
+					if(n == 0)					// Caso base (1)
+						ret = n;
+					else if (n == 1)			// Caso base (2)
+						ret = n;
+					else						// Caso recursivo 
+						ret = fibMultiple (n-1) + fibMultiple (n-2);
+						
+					return ret;
+				}                
+             
+Apartado 3: Compile y ejecute el programa y verifique que funciona correctamente.
+
+            HECHO
+           
+Apartado 4: ¿Es recursividad simple o múltiple? ¿Es final o no final?
+
+          +- Recuerda que: -------------------------------------------------------------------+
+          |                                                                                   | 
+          | - Recursividad simple o lineal: en cada llamada recursiva se ejecuta, como mucho, |
+          |   ----------------------------  una llamada a la propia función. Esto puede ser:  |
+          |                                                                                   |
+          |     · Recursividad no final: antes de la llamada recursiva hago una operación.    |
+          |       ---------------------                                                       |
+          |                                                                                   |
+          |     · Recursividad final: antes de la llamada recursiva no hay nada.              |
+          |       ------------------                                                          |
+          |                                                                                   |
+          | - Recursividad multiple: en cada llamada recursiva pueden ejecutarse más de una   |
+          |   ---------------------  llamada a la propia función.                             |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+  
+              
+          Este algoritmo es recursivo multiple final.
+          
+AMPLIACIÓN: He realizado el algoritmo iterativo.
+
+        Transformación Recursivo Multiple a Iterativo:
+        ---------------------------------------------
+        - Transformacion hacia arriba de Recursividad Múltiple a Iterativo (técnica Bottom-up)
+        
+	      · Aunque se suele utilizar para recursión múltiple, también podemos utilizarlo para
+	        recursión simple.
+	    
+	      · Consiste en generalizar el problema incorporando los sub-problemas necesarios y sus
+	        soluciones calculadas. ¡IMPORTANTE!: Un parametro por cada sub-problema.
+	    
+	      · La iteración empieza por los casos base y acaba por el problema original. Enfoque
+	        bottom-up.
+	  
+	      IDEA: Ahora en lugar de empezar por los casos más grandes, empezamos por los casos
+	            más pequeños (casos base) y vamos ascendiendo.
+	            
+	           · El problema generalizado tendrá las propiedades (i, ...)  --> Tantos como casos
+	                                                                           base necesitemos.
+	                                                                           
+	           · Establecemos el invariante: varCasoBase = solCasoBase,... --> Tantos como casos
+	                      	                      	                           base necesitemos.
+	           
+	           · El problema final es i=n y el problema inicial que cumple el invariante es
+	             (i,valorDelCasoBase,...) --> Inicializamos todos los  casos base.
+	           
+	           · Decidimos incrementar en cada paso la variable i en 1
+	
+               · El siguiente problema (estado) será:
+               
+                      iNueva = i + 1;
+                      varCasoBaseNueva = ...    
+                      varCasoBaseNueva = ...
+                      
+               · El código sería:
+
+                                  / b(x): condicion del caso base
+                   ¿Qué significa | !b(x): contrario a b(x)               
+                        cada      | sb(x): solución del caso base
+                        cosa?     | sp(x): siguiente problema
+                                  \ f(sp(x)): llamada recursiva del siguiente problema
+           
+        
+        	    T algMultipleToAlgIterativo (R x,...){
+        	    	T i, varCasoBase1, ...    			// Creamos una variable por cada caso base
+        	    	varCasoBase1 = solCasoBase1, ... 	// Inicializamos los basos base
+        	    	
+        	    	while(i < x){						// Siempre que no sea el caso base
+        	    		//Calculamos el siguiente problema
+        	    		iNueva = i + 1;                 //Incrementamos i en 1
+        	    		
+        	    		//Esta parte depende de cada algoritmo
+                      	varCasoBaseNueva1 = ...;
+                      	varCasoBaseNueva2 = ...;
+        	    	}
+        	    	
+        	    	return varCasoBase1;				// El problema final es i=n. Si i=n, entonces
+        	    }										// algMultipleToAlgIterativo(n) es la solución
+        	    										// del algoritmo.
+          
+            long fibIterativo (int n){
+            	int i = 0, iNueva;						// Inicializamos el contador en 0
+            	long a = 1, aNueva;						// Inicializamos el caso base a
+            	long b = 0, bNueva;						// Inicializamos el caso base b
+            	
+            	while (i < n){							// Siempre que no sea el caso base
+            		iNueva = i + 1;						// Incrementamos el contador en 1
+            		aNueva = a + b;						
+            		bNueva = b;							
+    
+    				i = iNueva;        		
+            		a = aNueva;
+            		b = bNueva;						
+	           	}
+            	return b;
+            }
+  
+             i=0          i=1                 i=2                 i=3                     i=n                    
++--------+---------+----------------+--------------------+--------------------+------------------------------+
+| f(i+1) | f(1)=1  | f(2)=f(1)+f(0) | f(3) = f(2) + f(1) | f(4) = f(3) + f(2) | aNueva = aAntigua + bAntigua | a = aNueva
+|  f(i)  | f(0)=0  | f(1)=1         | f(2) = f(1) + f(0) | f(3) = f(2) + f(1) | bNueva = aAntigua            | b = bNueva
++--------+---------+----------------+--------------------+--------------------+------------------------------+
+
+a=1, b=0   
+f(i)      f(0)=0     f(1)=1             f(2)=f(1)+f(0)                         b = bNueva = aAnt
+f(i+1)    f(1)=1     f(2)=f(1)+f(0)     f(3)=f(2)+f(1)                         a = aNueva = aAnt. + bAnt.

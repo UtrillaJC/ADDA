@@ -1,0 +1,213 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class RaizDeHeron {
+	/* Apartado 1: Defina la función recursiva no final raiz_heron(rH)
+	 *                    +-  1                                                              , n = 0
+	 *                    |  
+	 *   rH (raiz, itr) = |   1    /                                      raiz             \
+	 *                    |   -  * | raiz_Heron(raiz, itr - 1) + ------------------------- | , n > 0
+	 *                    +-  2    \                                 rH(raiz, itr - 1)     /
+	 */
+	
+	/* Apartado 2: Implemente una función recursiva no final empleando el lenguaje de programación que
+	 *             le ha indicado su profesor (Java) que solucione el problema planteado, partiendo de 
+	 *             la función definida previamente.
+	 */	
+	
+	// Implementación del algoritmo recursivo no final.
+	public static Double recNoFinal (int x, int n){
+		Double ret;
+		Double temp;
+		
+		// Comprobaciones de parámetros de entrada
+		assert(x >= 0 || n >= 0);
+		
+		if (n == 0)								// Caso base
+			ret = 1D; 							// Sol. caso base
+		else {									// Caso recursivo
+			temp = recNoFinal(x, n - 1);
+			ret = 1/2D * (temp + (x / temp)) ;	// Llamada rec.
+		}										// del sig. problema
+			
+		return ret;
+	}
+	
+	// Solución al algoritmo recursivo múltiple no final con memoria (Este caso no es necesario porque
+	// en la llamada recursiva no existe solapamiento)
+	public static Double recNoFinalConMemoria(int x, int n, Map<Integer, Double> mem){
+		Double ret;
+		
+		if (mem.containsKey(n))						// Comprobamos si está guardado en mem.
+			ret = mem.get(n);						// Obtenemos el valor guardado
+		else if (n == 0){							// Caso base
+			ret = 1D;								// Sol. caso base
+			mem.put(n, ret);						// Almacenamos el valor calculado
+		}
+		else{										// Caso recursivo
+			ret = 1/2D * ( recNoFinalConMemoria(x, n - 1,mem) // Hallamos el valor recursivo
+					   + (x / recNoFinalConMemoria(x, n - 1, mem))) ;
+			mem.put(n, ret);						// Almacenamos el valor calculado
+		}
+			
+		return ret;		
+	}
+	
+	/* Apartado 3: Pasar la función anterior a un algoritmo iterativo usando la técnica bottom-up
+	 * 
+	 *  Transformación hacia arriba Recursivo Múltiple a Iterativo:
+	 *  -----------------------------------------------------------
+	 *    · Aunque se suele utilizar para recursión múltiple, también podemos utilizarlo para
+	 *      recursión simple.
+	 *  
+	 *    · Consiste en generalizar el problema incorporando los sub-problemas necesarios y sus
+	 *      soluciones calculadas. ¡IMPORTANTE!: Un parametro por cada sub-problema.
+	 *  
+	 *    · La iteración empieza por los casos base y acaba por el problema original. Enfoque
+	 *      bottom-up.
+	 *      
+	 *   IDEA: Ahora en lugar de empezar por los casos más grandes, empezamos por los casos
+	 *         más pequeños (casos base) y vamos ascendiendo. Nuestro grafo sería algo como:
+	 *         
+	 *         · El problema generalizado tendrá las propiedades (i, cB)
+	 *         · Establecemos el invariante: a = rH(raiz, i)
+	 *         · El problema final es i = itr y el problema inicial que cumple el invariante
+	 *           es (0,1), es decir (i = 0, cB = 1)
+	 *         · Decidimos incrementar en cada paso la variable i en 1
+	 *         · El siguiente problema (estado) será:
+	 *         
+	 *           iNueva = i + 1              1   /                    raiz     \
+	 *           aNueva = rH (raiz, i + 1) = - * | rH(raiz, 0) + ------------- |
+	 *                                       2   \                rH(raiz, 0)  /
+	 *                                        
+	 *         El invariante 
+	 */             
+
+	// Implementación del algoritmo iterativo
+	public static Double iterativo (int x, int n){
+		int i = 0;							// Contador (siempre empieza en 0)
+		
+		// Casos base (creamos una nueva variable por cada caso base)
+		Double a = 1D;						// Lo inicializamos al valor del caso base
+		
+		// Variables auxiliares que almacenarán los nuevos valores
+		Double aNueva;
+		int iNueva;
+		
+		while (i < n){						// Siempre que sea distinto del problema final (i = n) 
+											//  o distinto de caso base
+			iNueva = i + 1;					// Incrementamos el contador en 1
+			aNueva = 1/2D * (a + x / a);	// Hayamos el nuevo valor del siguiente rH
+			
+			i = iNueva;						// Actualizamos el valor de i
+			a = aNueva;						// Actualizamos el valor de a
+		}
+		
+		return a;							// Si i = n, entonces rH(x, iNueva) = rH(x, n)
+	}
+	
+	//Otra forma de realizar el algoritmo iterativo
+	public static Double iterativo2 (int raiz, int iteracion){
+		// Casos base (creamos una nueva variable por cada caso base) 
+		Double a = 1D; 
+		
+		// Variables auxiliares que almacenarán los nuevos valores
+		Double aNueva;
+		
+		while (iteracion > 0){					//Siempre que sea distinto del problema final (i = n)
+			iteracion = iteracion - 1;			//Decrementamos el contador en 1
+			aNueva = 1/2D * (a + raiz / a);		//Hayamos el nuevo valor del siguiente rH			
+			a = aNueva;							//Actualizamos el valor de a
+		}	
+		
+		return a; 								//Si i = n, entonces rH(raiz, iNueva) = rh(raiz,iteracion)
+	}
+	
+	/* Apartado 4: A partir del algoritmo, implemente una función recursiva final.
+	 * 
+	 *  Transformación recursivo Final a Iterativo:
+	 *  -------------------------------------------
+	 *  Dada una función recursiva final:      Entonces el algoritmo resultante es de la forma:
+	 *  
+	 *           g(p) = f(i(p))                        R g (T p){
+	 *                                                      E x = i(p);
+	 *          / sb(x)        , b(x)                       while (!b(x)){
+	 *   f(x) = |                                                x = sp(x);
+	 *          \ f(sp(x))     , !b(x)                      }
+	 *                                                      return sb(x);
+	 *                                                 }
+	 *    
+	 *                   / b(x): condicion del caso base
+	 *    ¿Qué significa | !b(x): contrario a b(x)               
+	 *         cada      | sb(x): solución del caso base
+	 *         cosa?     | sp(x): siguiente problema
+	 *                   \ f(sp(x)): llamada recursiva del siguiente problema
+	 *     
+	 *  Una vez que sabemos esto, ya podemos crear nuestra función recursiva final. Para empezar,
+	 *  identificamos cada una de las partes y construimos la función recursiva final:
+	 * 
+	 *    x: (x, n)
+	 *    b(x)     ==  b(x, n): i >= n
+	 *    !b(x)    == !b(x, n): i < n
+	 *    sb(x)    == sb(x, n): a
+	 *    sp(x)    == sp(x, n, i, a): (x, n, i+1, 1/2D * (a + x / a))
+	 *    f(sp(x)) == f(sp(x, n, i, a)): rH (x, n, i+1, 1/2D * (a + x / a))
+	 *    
+	 *    rH(x, n, i, a) = rH(x, n, 0, 1D)
+	 *    
+	 *                     / a                                    , i >= n
+	 *    rH(x, n, i, a) = |
+	 *                     \ rH(x, n, i+1, 1/2D * (a + x / a)))   , i < n
+	 *                            
+	 *  
+*/
+	// Implementación del algoritmo recursivo final
+	public static Double recFinal (int x, int n){
+		return RaizDeHeron.recFinal(x, n, 0, 1D);
+	}
+	private static Double recFinal (int x, int n, int i, Double a){
+		Double ret;
+		
+		if(i >= n)								// Caso base
+			ret = a;							// Sol. caso base
+		else									// Caso recursivo
+			ret = recFinal(x, n, i+1, 1/2D * (a + x / a));
+		
+		return ret; 							//Si i = itr, entonces rH(x, iNueva) = rH(x, n)
+	}
+	
+	/* Apartado 5: Indique el tamaño del problema, T(n) y la complejidad del algoritmo (recursivo
+	 * 			e iterativo)
+	 */
+	
+	// Método principal
+	public static void main(String[] args) {
+		// Variables
+		int x = 2; 		// Raiz
+		int n = 0;		// Iteraciones
+		
+		// Valor real de la raíz de 2: 1.4142135623730951. 
+		System.out.println("El valor real de la raíz de 2 es: " + Math.sqrt(x));
+		
+		// Apartado 2
+		System.out.println("El algoritmo recursivo no final para la raiz " + x
+						 + " en " + n + " iteraciones da como resultado: "
+						 + RaizDeHeron.recNoFinal(x, n));
+		
+		// Devuelve 1.4142135623746899. Correcto
+		
+		// Apartado 3
+		System.out.println("El algoritmo iterativo para la raiz " + x
+				 + " en " + n + " iteraciones da como resultado: "
+				 + RaizDeHeron.iterativo(x, n));
+		
+		// Devuelve 1.4142135623746899. Correcto
+		
+		// Apartado 4
+		System.out.println("El algoritmo recursivo final para la raiz " + x
+				 + " en " + n + " iteraciones da como resultado: "
+				 + RaizDeHeron.recFinal(x, n));
+		
+		// Devuelve 1.4142135623746899. Correcto
+	}
+}

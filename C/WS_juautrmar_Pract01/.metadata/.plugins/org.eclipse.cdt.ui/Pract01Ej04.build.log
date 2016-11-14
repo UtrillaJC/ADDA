@@ -1,0 +1,7 @@
+22:05:00 **** Incremental Build of configuration Debug for project Pract01Ej04 ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o "Codigo\\euclides.o" "..\\Codigo\\euclides.c" 
+gcc -o Pract01Ej04.exe "Codigo\\euclides.o" 
+
+22:05:01 Build Finished (took 759ms)
+

@@ -1,0 +1,97 @@
+Apartado 1: Cree un nuevo proyecto llamado Pract01Ej04.
+            
+                 HECHO
+                 
+Apartado 2: Incorpore al proyecto el archivo euclides.c proporcionado e implemente la defi-
+            nición recursiva del problema:
+
+                             /  a                 , si b = 0
+                             |  
+                  mcd(a,b) = |  mcd(b,a)          , si a < b
+                             |                    
+                             \  mcd(b,a%b)        , si a > b
+
+        Solución:
+        ---------
+          
+				int mcdFinal (int a, int b){
+					int ret;
+
+					if (b == 0)            	// Caso base (En este ejercicio, solo hay uno)
+						ret = a;          
+					else if (a < b)			// Caso recursivo (1)
+               			ret = mcd(b,a);
+					else					// Caso recursivo (2)
+						ret = mcd(b,a%b);
+
+					return ret;
+          		}
+                
+             
+Apartado 3: Compile y ejecute el programa y verifique que funciona correctamente.
+
+            HECHO
+           
+Apartado 4: ¿Es recursividad simple o múltiple? ¿Es final o no final?
+
+          +- Recuerda que: -------------------------------------------------------------------+
+          |                                                                                   | 
+          | - Recursividad simple o lineal: en cada llamada recursiva se ejecuta, como mucho, |
+          |   ----------------------------  una llamada a la propia función. Esto puede ser:  |
+          |                                                                                   |
+          |     · Recursividad no final: antes de la llamada recursiva hago una operación.    |
+          |       ---------------------                                                       |
+          |                                                                                   |
+          |     · Recursividad final: antes de la llamada recursiva no hay nada.              |
+          |       ------------------                                                          |
+          |                                                                                   |
+          | - Recursividad multiple: en cada llamada recursiva pueden ejecutarse más de una   |
+          |   ---------------------  llamada a la propia función.                             |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+  
+              
+          Este algoritmo es recursivo simple final.
+
+Apartado 6: Implemente dentro de euclides.c la función mcdIterativo con la versión iterativa, 
+            usando los esquemas y plantillas vistos en teoria.
+          
+        Solución:
+        --------
+          
+          +- Transformación recursivo final a iterativo: -------------------------------------+
+          |                                                                                   |
+          |  · Dada una función recursiva final, el algoritmo resultante es de la forma:      |
+	      |                                                                                   |
+	      |           g(p) = f(i(p))                        R g (T p){                        |
+	      |                                                      E x = i(p);                  |
+	      |          / sb(x)        , b(x)                       while (!b(x)){               |
+	      |   f(x) = |                                                x = sp(x);              |
+	      |          \ f(sp(x))     , !b(x)                      }                            |
+	      |                                                      return sb(x);                |
+	      |                                                 }                                 |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+
+          
+          Consejo 1: si nos encontramos con más de un caso recursivo, tendremos que distinguir
+          ---------  dentro del algoritmo recursivo cada caso (con un if).
+          
+          Analicemos nuestra definición recursiva.
+
+                   f(a,b) = fg(a,b)                           int mcdIterativa (int a, int b){
+                                                                   int temp;
+                          /  a                 , si b = 0          while (b != 0){  
+                          |                                             temp = a;
+               mcd(a,b) = |  mcd(b,a)          , si a < b               a = b; 
+                          |                                             if(a < b)                          
+                          \  mcd(b,a%b)        , si a > b                    b = temp;
+                                                                        else
+                                                                             b = temp%b;
+                                                                   }     
+                                                                   return a;
+                                                              }
+         
+
+Apartado 6: Compruebe el correcto funcionamiento de las dos implementaciones par varios casos 
+            de prueba y compare los resultados obtenidos:
+            
+            HECHO. En los 2 casos coinciden los resultados.

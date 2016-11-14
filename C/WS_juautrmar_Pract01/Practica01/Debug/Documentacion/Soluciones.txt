@@ -1,0 +1,271 @@
+Apartado 1: Cree un nuevo proyecto llamado Pract01Ej03.
+            
+                 HECHO
+                 
+Apartado 2: Incorpore al proyecto el archivo suma.c suministrado con la práctica en la
+            carpeta de proyecto e implemente la definición recursiva :
+
+                            /  d[i]              , si i = 0
+                  suma(i) = |
+                            \  d[i] + suma[i-1]  , si i > 0
+                            
+            a) Por simplicidad, defina al principio del archivo suma.c la tabla de números a
+               sumar. Utilice también los números del 0 al 9.
+            
+            b) Defina también una constante con el tamaño de la tabla llamada TAM. En este 
+               caso la tabla tendrá 10 elementos.
+
+        Solución:
+        ---------
+
+        Este es la definición recursiva que nos dan. Vamos a adaptarlo en una definición recur-
+        siva siguiente:
+
+        Analicemos el algoritmo parte por parte:
+
+                    / b(x): condición del caso base -+ Caso base: su solución es tan sencilla
+                    | !b(x): contrario a b(x)        | de resolver que no hay que hacer una
+                    | sb(x): solución del caso base -+ llamada recursiva para calcularlo.
+           ¿Qué     |
+         significa  | sp(x): siguiente problema.  ¿Cómo cambia el problema al hacer la llamada
+           cada     |                             recursiva? No le paso x, paso una transforma-
+           cosa?    |                             ción de x.
+                    |
+                    | f(sp(x)): llamada recursiva del siguiente problema
+                    |
+                    \ c(x, f(sp(x))): función de   ¿Qué se hace con el problema y con el
+                                      combinación.  resultado de la llamada recursiva?
+  
+         · x: (i) --------------> Donde aparezca x, sustituimos por (i)
+         · b(x)  == b(i): d[i]
+         · sb(x) == sb(i): i == 0
+         · sp(x) == sp(i): (i - 1)
+         · f(sp(x)) == f(sp(i)): f(i - 1)
+         · c(x, f(sp(x))) == c(i, f(sp(i))): c(i, f(i - 1)): d[i] + f(i - 1)
+  
+         Una vez analizado, construyamos la definición recursiva:
+  
+                    / sb(x)           , b(x)                  / d[i]            ,   i = 0
+             f(x) = |                         ---->  f(i) =   |
+                    \ c(x, f(sp(x))) , !b(x)                  \ d[i] + f(i - 1) ,   i > 0
+         
+         Realicemos una traza para ver si la definición es correcta:
+         
+          f(3) = d[3] + f(2) = d[3] + d[2] + f(1) = d[3] + d[2] + d[1] + f(0) = 
+               = d[3] + d[2] + d[1] + d[0] (OK)
+                   
+         El código resultante seria:
+                  
+          +-- Esquema de diseño recursivo ----------------------------------------------------+
+          |                                                                                   |
+          |  R g (T p){                  T: tipo del problema                                 |
+          |       return f ( i(p) );     E: tipo del problema 'generalizado'                  |
+          |  }                           R: tipo de la solución                               |             
+          |                                                                                   |
+          |  R f (E x){                  Paso 1: A partir del problema inicial (T p) genera-  |
+          |       R r, R s, E, y;                lizamos a otro (E x) y definimos su dominio  |
+          |                                      (problemas de interés).                      |
+          |       if( b(x) ){            Paso 2: Definimos una función de tamaño t (E x).     | 
+          |            r = sb(x);        Paso 3: Escogemos un conjunto de problemas de tamaño |
+          |       }                              pequeño b(E x) cuya solución es conocida     |
+          |       else {                         sb(E x).                                     |
+          |            y = sp(x);        Paso 4: Para problemas más grandes:                  |
+          |            s = f(y);                  · Escogemos un subconjunto de problemas     |
+          |            r = c(x,s)                   sp(E x) de tamaño menor al original.      |
+          |       }                               · Diseñamos una función de combinación      |
+          |                                         c(E x, LR s) que calcula la solución      |
+          |       return r;                         del problema.                             |
+          |  }                           Paso 5: Diseñamos la función de instanciación i(T p) |
+          +-----------------------------------------------------------------------------------+
+          
+          int sumaNoFinal (int i){
+	           int ret;
+
+               if (i == 0)            // Caso base (En este ejercicio, solo hay uno)
+                    ret = d[i];          
+               else                   // Caso recursivo (En este ejercicio, solo hay uno)
+                    ret = d[i] + sumaNoFinal(i - 1);
+
+	           return ret;
+          }
+                
+             
+Apartado 3: La función suma debe implementarse siguiendo el esquema general visto en teoria.
+            Indique qué esquemas recursivos de los vistos en clase de teoria servirán para
+            solucionar este problema.
+            
+            El problema con el que estamos trabajando es una secuencia indexable, por lo que 
+            para resolverlo utilizamos la generalización de secuencias.
+            
+            Para este problema en concreto valdría cualquier tipo de generalización de secuen-
+            cias:
+                · Prefijo: consiste en recorrer los elementos de derecha a izquierda en un
+                           intervalo concreto.
+                · Sufijo: consiste en recorrer los elementos de izquierda a derecha en un
+                          intervalo concreto. 
+                · Subsecuencia mitad: consiste en recorrer los elementos desde la izquierda
+                                      hasta la posición central y desde la derecha hasta la
+                                      posición central de forma simultánea.
+                · Subsecuencia central: consiste en recorrer los elementos desde
+           
+Apartado 4: Compile y ejecute el programa y verifique que funciona correctamente.
+
+            HECHO
+            
+Apartado 5: ¿Es recursividad simple o múltiple? ¿Es final o no final?
+
+          +- Recuerda que: -------------------------------------------------------------------+
+          |                                                                                   | 
+          | - Recursividad simple o lineal: en cada llamada recursiva se ejecuta, como mucho, |
+          |   ----------------------------  una llamada a la propia función. Esto puede ser:  |
+          |                                                                                   |
+          |     · Recursividad no final: antes de la llamada recursiva hago una operación.    |
+          |       ---------------------                                                       |
+          |                                                                                   |
+          |     · Recursividad final: antes de la llamada recursiva no hay nada.              |
+          |       ------------------                                                          |
+          |                                                                                   |
+          | - Recursividad multiple: en cada llamada recursiva pueden ejecutarse más de una   |
+          |   ---------------------  llamada a la propia función.                             |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+  
+              
+          Este algoritmo es recursivo simple no final.
+
+Apartado 6: Implemente dentro de suma.c la función sumaFinal con la versión recursiva final, 
+            usando los esquemas y plantillas vistos en teoria.
+          
+        Solución:
+        ---------
+          +- Transformación recursivo no final a final:  -------------------------------------+
+          |                                                                                   |
+          | · Dada una definición recursiva no final, la definición recursiva final quedaria: |
+          |                                                                                   |
+          |                                                   f(x) = fg(x,e)                  |
+          |                                                                                   |
+          |        / sb(x)         ,  b(x)               / c'(sb(x), ac)      ,  b(x)         |
+          |  f(x)= |                            fg(x,e)= |                                    |
+          |        \ c(x, f(sp(x))),  !b(x)              \ fg(sp(x), c'(x,ac)), !b(x)         |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+
+          
+        Analicemos el algoritmo parte por parte:
+
+                    / b(x): condición del caso base -+ Caso base: su solución es tan sencilla
+                    | !b(x): contrario a b(x)        | de resolver que no hay que hacer una
+                    | sb(x): solución del caso base -+ llamada recursiva para calcularlo.
+                    |
+                    | sp(x): siguiente problema.  ¿Cómo cambia el problema al hacer la llamada
+                    |                             recursiva? No le paso x, paso una transforma-
+                    |                             ción de x.
+                    |
+                    | f(sp(x)): llamada recursiva del siguiente problema
+                    |
+                    | c(x, f(sp(x))): función de   ¿Qué se hace con el problema y con el
+           ¿Qué     |                 combinación.  resultado de la llamada recursiva?
+         significa  |
+           cada     | e: valor con el que se va a inicializar el acumulador (ac). Éste depende- 
+           cosa?    |    rá de la operación adicional que se realice. Si la operación adicional:
+                    |       · Es una suma: el operador neutro (valor al que se inicializa) es 0
+                    |       · Es una multiplicación: el operador neutro (valor al que se inicia-
+                    |                                liza) es 1
+                    | ac: variable acumuladora
+                    |
+                    | fg(x,e): función generalizada.
+                    | 
+                    | c'(sb(x), ac): función de combinacion.
+                    | 
+                    | c'(x, ac): función de combinación.
+                    | 
+                    \ fg(sp(x), c'(x,ac)): llamada recursiva del siguiente problema
+                                      
+                                      
+          
+         · x: (i) --------------> Donde aparezca x, sustituimos por (i)
+         · b(x)  == b(i):  i = 0
+         · sb(x) == sb(i): d[i]
+         · sp(x) == sp(i): (i-1)
+         · f(sp(x)) == f(sp(i)): f(i-1)
+         · c(x, f(sp(x))): c(i, f(i-1)) = d[i] + f(i-1)
+         · e = 0 ----------> La operación adicional es una multiplicación (d[i] + f(i-1))
+         · fg(x,e) == fg(i,e): fg(i,0)
+         · c'(sb(x), ac) == c'(sb(i), ac): d[i] + ac
+         · c'(x, ac) == c'(i,ac)
+         · fg(sp(x), c'(x,ac)) == fg(sp(i), c'(i,ac)): fg(i-1, ac + d[i])
+         
+         Una vez analizado, construyamos la definición recursiva:
+         
+                       f(x) = fg(x,e)                               f(i) = fg(i,0)
+                       
+                       / c'(sb(x), ac)      , b(x)                  / d[i] + ac       , i = 0
+             fg(x,e) = |                            -->  fg(i, 0) = |
+                       \ fg(sp(x), c'(x,ac)), !b(x)                 \ f(i-1, d[i]+ ac), i > 0
+         
+         Realicemos una traza para ver si la definición es correcta (TAM = 4):
+         
+          f(4, 0) = f(3, 0 + d[4]) = f(3, 0 + d[4] + d[3]) = f(2, 0 + d[4] + d[3] + d[2]) =
+                  = f(1, 0 + d[4] + d[3] + d[2] + d[1]) = 
+                  = f(0, 0 + d[4] + d[3] + d[2] + d[1] + d[0]) (OK)
+                    
+          El código resultante seria:
+          
+				int sumaFinalPrefija(int iteracion, int acumulador){
+					int ret;
+				
+					if(iteracion == 0)				// Caso base
+						ret = tabla[iteracion] + acumulador;
+					else						// Caso recursivo
+						ret = sumaFinalPrefija(iteracion - 1, acumulador + tabla[iteracion]);
+				
+					return ret;
+				}
+          
+          En el código también se han realizado la SumaFinalSufija.
+                
+Apartado 6: Implemente dentro de suma.c la función sumaIterativo con la versión iterativa, usando
+            los esquemas y plantillas vistos en teoría.
+          
+          +- Transformación recursivo final a iterativo: -------------------------------------+
+          |                                                                                   |
+          |  · Dada una función recursiva final, el algoritmo resultante es de la forma:      |
+	      |                                                                                   |
+	      |           g(p) = f(i(p))                        R g (T p){                        |
+	      |                                                      E x = i(p);                  |
+	      |          / sb(x)        , b(x)                       while (!b(x)){               |
+	      |   f(x) = |                                                x = sp(x);              |
+	      |          \ f(sp(x))     , !b(x)                      }                            |
+	      |                                                      return sb(x);                |
+	      |                                                 }                                 |
+          |                                                                                   |
+          +-----------------------------------------------------------------------------------+
+          
+          Analicemos nuestra definición recursiva:
+          
+                     f(i) = fg(i,0)                     · x: (i, ac)
+                                                        · sb(x) = sb(i, ac): ac + d[i]
+                    / d[i] + ac       ,   i = 0         · b(x) = b(i, ac):   i = 0
+          f(i, 0) = |                                   · !b(x) = !b(i, ac): i > 0
+                    \ f(i-1, d[i]+ ac),   i > 0         · sp(x) = sp(i, ac):  (i-1, a*ac)
+                                                          · f(sp(x)) = f(sp(i,ac)): f(i-1, d[i] + ac)
+                                                          
+          Nuestro algoritmo quedaría de la siguiente forma:
+          
+          R g (T p){                       int sumaIterativa (int tamano){
+               E x = i(p);                      int acumulador = 0;
+          	   while(!b(x)){                    while (tamano > 0){
+          	        x = sp(x);                       acumulador	= acumulador + d[tamano];
+          	   }                                     tamano = tamano - 1;
+          	   return sb(x);                    }
+          }                                     return acumulador + d[tamano];
+                                           }
+
+Apartado 7: Compruebe el correcto funcionamiento de las tres implementaciones para varios casos de 
+            prueba y compare los resultados obtenidos:
+            
+            Nota: como se ha comentado, definir la tabla a sumar en el archivo de funciones simpli-
+                  fica el código pero, a cambio lo hace mucho menos reutilizable. Para aumentar la
+                  reusabilidad de esta solución sería más adecuado poder indicar con algún paráme-
+                  tro el cuál es la tabla a sumar y su tamaño. Como ejercicio alternativo puede in-
+                  tentar plantear cómo sería el diseño de esta solución.
+            
+            HECHO. En los 3 casos coinciden los resultados.

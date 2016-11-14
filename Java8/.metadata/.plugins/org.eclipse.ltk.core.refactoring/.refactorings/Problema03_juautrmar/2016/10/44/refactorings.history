@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;iteracion&apos; in &apos;RaizDeHeron.recNoFinalConMemoria(...)&apos; to &apos;itr&apos;&#x0D;&#x0A;- Original project: &apos;PracticaIndividual_1&apos;&#x0D;&#x0A;- Original element: &apos;RaizDeHeron.recNoFinalConMemoria(int, int, Map&lt;Integer, Double&gt;).iteracion&apos;&#x0D;&#x0A;- Renamed element: &apos;iteracion&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;iteracion&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;{RaizDeHeron.java[RaizDeHeron~recNoFinalConMemoria~I~I~QMap\&lt;QInteger;QDouble;&gt;;@iteracion!1464!1476!1468!1476!I!0!true" name="itr" references="true" stamp="1477951300375" version="1.0"/>
+</session>

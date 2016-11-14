@@ -1,0 +1,14 @@
+02:32:24 **** Incremental Build of configuration Debug for project Pract01Ej05 ****
+Info: Internal Builder is used for build
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -o "Codigo\\fibonacci.o" "..\\Codigo\\fibonacci.c" 
+..\Codigo\fibonacci.c: In function 'main':
+..\Codigo\fibonacci.c:17:52: warning: implicit declaration of function 'fibIterativo' [-Wimplicit-function-declaration]
+  printf("El numero de fibonacci %d es el %d\n", n, fibIterativo(n));
+                                                    ^
+..\Codigo\fibonacci.c:8:6: warning: unused variable 'r' [-Wunused-variable]
+  int r;
+      ^
+gcc -o Pract01Ej05.exe "Codigo\\fibonacci.o" 
+
+02:32:24 Build Finished (took 716ms)
+
